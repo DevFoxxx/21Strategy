@@ -1,0 +1,39 @@
+/* Selettore per ID reset */
+* {
+}
+
+/*
+#tableWall {
+    -fx-background-image: url("https://thelibrary.mgmresorts.com/transform/svapBg4wpO81/AdobeStock_124534065-Poker-Table-with-Chips-and-Cards.jpeg");
+    -fx-background-size: cover;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10px 20px;
+}
+*/
+
+#reset {
+    -fx-background-color: #FF6347;  /* Colore di sfondo Tomato */
+    -fx-text-fill: white;  /* Colore del testo */
+    -fx-font-size: 16px;  /* Dimensione del font */
+    -fx-padding: 10px 10px;  /* Padding */
+}
+
+#start {
+    -fx-background-color: green;  /* Colore di sfondo Tomato */
+    -fx-text-fill: white;  /* Colore del testo */
+    -fx-font-size: 16px;  /* Dimensione del font */
+    -fx-padding: 10px 10px;  /* Padding */
+}
+
+#button1, #button2, #button3, #button4, #button5, #button6, #button7, #button8, #button9, #button10 {
+    -fx-background-color: white;  /* Colore di sfondo Tomato */
+    -fx-border-color: black;
+    -fx-min-height: 30px;
+    -fx-min-width: 50px;
+    -fx-padding: 10px 10px;  /* Padding */
+}
+
+#button1:hover, #button2:hover, #button3:hover, #button4:hover, #button5:hover, #button6:hover, #button7:hover, #button8:hover, #button9:hover, #button10:hover {
+    -fx-background-color: #c5c5c5;
+}

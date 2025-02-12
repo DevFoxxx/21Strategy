@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+    <Label fx:id="playerScoreLabel" layoutX="14.0" layoutY="14.0" text="Punteggio Giocatore: 0" />
+    <Label fx:id="dealerScoreLabel" layoutX="14.0" layoutY="50.0" text="Punteggio Banco: 0" />
+    <Button fx:id="calculateButton" text="Calcola Probabilità" layoutX="14.0" layoutY="100.0" />
+</AnchorPane>
