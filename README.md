@@ -22,6 +22,8 @@ This software is developed exclusively for **educational** and **study** purpose
 - **CSS:** For styling the GUI, making the user experience even more enjoyable.
 - **Additional Libraries:** Various libraries for probability calculation and performance optimization.
 
+![img.png](img.png)
+
 ## Contributions 🤝
 Contribute to this project:
 - **Bug Fixing:** Help fix any issues in the software.
@@ -31,3 +33,4 @@ Contribute to this project:
 
 ## License 📜
 This project is licensed under the **MIT License**. You are free to use, modify, and distribute it as long as the license is included. Open source is for everyone! 
+

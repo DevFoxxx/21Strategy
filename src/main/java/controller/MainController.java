@@ -14,22 +14,26 @@ public class MainController {
     private final Map<Integer, Integer> cardCounts = new HashMap<>();
     private final BlackJackModel gameModel = new BlackJackModel();
 
+    // FXML components
     @FXML private TextField decksNum;
     @FXML private CheckBox myTurn, dealerTurn;
-    @FXML private Button button1, button2, button3, button4, button5, button6, button7, button8, button9, button10;
+    @FXML private Button button1, button2, button3, button4, button5, button6, button7, button8, button9, button10; // card buttons
     @FXML private Button start, reset, newTurn;
-    @FXML private Label label1, label2, label3, label4, label5, label6, label7, label8, label9, label10;
-    @FXML private Label probOf12, probOf13, probOf14, probOf15, probOf16, probOf17, probOf18, probOf19, probOf20, probOf21;
-    @FXML private Label totalCards, playerHand, probToBust;
-    @FXML private Label dealerHand;
-    @FXML private Label dealerProbOf17, dealerProbOf18, dealerProbOf19, dealerProbOf20, dealerProbOf21, dealerProbOfBust;
+    @FXML private Label label1, label2, label3, label4, label5, label6, label7, label8, label9, label10; // total deck cards by value
+    @FXML private Label probOf12, probOf13, probOf14, probOf15, probOf16, probOf17, probOf18, probOf19, probOf20, probOf21; // player probability
+    @FXML private Label totalCards, playerHand, probToBust, dealerHand, dealerProbOfBust;
+    @FXML private Label dealerProbOf17, dealerProbOf18, dealerProbOf19, dealerProbOf20, dealerProbOf21; // dealer probability
 
     private List<Label> labels;
 
+    /**
+     * @brief Initializes the controller by setting up the buttons and labels.
+     */
     @FXML
-    public void initialize() {
+    public void initialize() throws NoSuchFieldException, IllegalAccessException {
         labels = List.of(label1, label2, label3, label4, label5, label6, label7, label8, label9, label10);
 
+        // Map buttons to corresponding labels
         buttonLabelMap.put(button1, label1);
         buttonLabelMap.put(button2, label2);
         buttonLabelMap.put(button3, label3);
@@ -41,8 +45,10 @@ public class MainController {
         buttonLabelMap.put(button9, label9);
         buttonLabelMap.put(button10, label10);
 
+        // Initialize card count to 1 deck
         setCardsNum(1);
 
+        // Set up button actions
         for (Map.Entry<Button, Label> entry : buttonLabelMap.entrySet()) {
             entry.getKey().setOnAction(event -> {
                 try {
@@ -53,9 +59,20 @@ public class MainController {
             });
         }
 
+        // Set up checkboxes actions
         myTurn.setOnAction(event -> handleTurnChange());
         dealerTurn.setOnAction(event -> handleDealerTurnChange());
-        start.setOnAction(event -> setCardsNum(getDecksNum()));
+
+        // Set up buttons for start, new turn, and reset
+        start.setOnAction(event -> {
+            try {
+                setCardsNum(getDecksNum());
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        });
         newTurn.setOnAction(event -> {
             try {
                 setNewTurn();
@@ -71,9 +88,15 @@ public class MainController {
             }
         });
 
+        // Update labels after initialization
         updateLabels();
     }
 
+    /**
+     * @brief Retrieves the number of decks entered by the user.
+     *
+     * @return The number of decks (default is 1 if input is invalid).
+     */
     private int getDecksNum() {
         try {
             return Math.max(1, Integer.parseInt(decksNum.getText().trim()));
@@ -82,6 +105,14 @@ public class MainController {
         }
     }
 
+    /**
+     * @brief Handles the action of clicking a card button.
+     *
+     * @param label The corresponding label for the clicked card.
+     * @param button The button that was clicked.
+     * @throws NoSuchFieldException If reflection fails to access fields.
+     * @throws IllegalAccessException If reflection access is denied.
+     */
     private void handleCardClick(Label label, Button button) throws NoSuchFieldException, IllegalAccessException {
         if (!labelValues.containsKey(label)) return;
 
@@ -89,37 +120,59 @@ public class MainController {
             int value = Integer.parseInt(button.getText().trim());
             decrementLabel(label, value);
 
+            // Add the card to the player's hand and update the hand
             gameModel.addCard(value);
             updatePlayerHand();
 
+            // Add the card to the dealer's hand and update the dealer's hand
             gameModel.addDealerCard(value);
             updateDealerHand();
 
+            // Update probabilities for the player and dealer
             updateProbabilities();
             updateDealerProbabilities();
         }
     }
 
+    /**
+     * @brief Handles the change in the player's turn (checkbox action).
+     */
     private void handleTurnChange() {
         gameModel.setMyTurn(myTurn.isSelected());
     }
 
+    /**
+     * @brief Handles the change in the dealer's turn (checkbox action).
+     */
     private void handleDealerTurnChange() {
-        System.out.println("Dealer turn changed");
         gameModel.setDealerTurn(dealerTurn.isSelected());
     }
+
+    /**
+     * @brief Updates the player's hand value on the UI.
+     */
     private void updatePlayerHand() {
         int playerValue = gameModel.getPlayerHandValue();
         playerHand.setText(String.valueOf(playerValue));
 
+        // Set text color to red if the player busts (hand value > 21)
         playerHand.setStyle(playerValue > 21 ? "-fx-text-fill: red;" : "-fx-text-fill: black;");
     }
 
+    /**
+     * @brief Updates the dealer's hand value on the UI.
+     */
     private void updateDealerHand() {
         int dealerValue = gameModel.getDealerHandValue();
         dealerHand.setText(String.valueOf(dealerValue));
     }
 
+    /**
+     * @brief Decrements the value of the selected label by the card value.
+     *
+     * @param label The label corresponding to the card.
+     * @param cardValue The value of the card.
+     */
     private void decrementLabel(Label label, int cardValue) {
         if (!labelValues.containsKey(label)) return;
 
@@ -128,20 +181,29 @@ public class MainController {
             labelValues.put(label, currentValue - 1);
             label.setText(String.valueOf(currentValue - 1));
 
+            // Decrease total card count
             int total = Integer.parseInt(totalCards.getText());
             totalCards.setText(String.valueOf(Math.max(0, total - 1)));
 
+            // Update the card count for the card value
             cardCounts.put(cardValue, cardCounts.getOrDefault(cardValue, 0) - 1);
         }
     }
 
-    private void setCardsNum(int decks) {
+    /**
+     * @brief Sets the number of decks in play.
+     *
+     * @param decks The number of decks to use.
+     */
+    private void setCardsNum(int decks) throws NoSuchFieldException, IllegalAccessException {
+        deleteGUIValue();
         for (int i = 2; i <= 9; i++) {
             cardCounts.put(i, 4 * decks);
         }
         cardCounts.put(10, 16 * decks);
         cardCounts.put(1, 4 * decks);
 
+        // Set the label values based on the number of decks
         for (Label label : labels) {
             labelValues.put(label, 4 * decks);
         }
@@ -151,19 +213,37 @@ public class MainController {
         updateLabels();
     }
 
+    /**
+     * @brief Updates the labels for the remaining cards.
+     */
     private void updateLabels() {
         for (Map.Entry<Label, Integer> entry : labelValues.entrySet()) {
             entry.getKey().setText(String.valueOf(entry.getValue()));
         }
     }
 
+    /**
+     * @brief Updates the probabilities for the player's hand.
+     *
+     * @throws NoSuchFieldException If reflection fails to access fields.
+     * @throws IllegalAccessException If reflection access is denied.
+     */
     private void updateProbabilities() throws NoSuchFieldException, IllegalAccessException {
         double probability = gameModel.probToBust(gameModel.getPlayerHandValue(), cardCounts, Integer.parseInt(totalCards.getText()));
         probToBust.setText(String.format("%.2f%%", probability * 100));
 
+        // Update probabilities for the player's hand values (12 to 21)
         updateProbLabels("probOf", gameModel.calculateProbabilities(cardCounts, Integer.parseInt(totalCards.getText())));
     }
 
+    /**
+     * @brief Updates the probability labels for values from 12 to 21.
+     *
+     * @param prefix The prefix for the probability labels (e.g., "probOf").
+     * @param probabilities The map containing probabilities for each value.
+     * @throws NoSuchFieldException If reflection fails to access fields.
+     * @throws IllegalAccessException If reflection access is denied.
+     */
     private void updateProbLabels(String prefix, Map<Integer, Double> probabilities) throws NoSuchFieldException, IllegalAccessException {
         for (int i = 12; i <= 21; i++) {
             Label probLabel = (Label) getClass().getDeclaredField(prefix + i).get(this);
@@ -172,35 +252,61 @@ public class MainController {
         }
     }
 
+    /**
+     * @brief Updates the dealer's probabilities for busting and specific hand values.
+     *
+     * @throws NoSuchFieldException If reflection fails to access fields.
+     * @throws IllegalAccessException If reflection access is denied.
+     */
     private void updateDealerProbabilities() throws NoSuchFieldException, IllegalAccessException {
-        // Ottieni le probabilità di bustare per il dealer
-        // double probability = gameModel.dealerProbToBust(gameModel.getDealerHandValue(), cardCounts, Integer.parseInt(totalCards.getText()));
-        // dealerProbToBust.setText(String.format("%.2f%%", probability * 100));
-
-        // Aggiorna le probabilità specifiche per il dealer (da 17 a 21)
+        double probability = gameModel.probToBust(gameModel.getDealerHandValue(), cardCounts, Integer.parseInt(totalCards.getText()));
+        dealerProbOfBust.setText(String.format("%.2f%%", probability * 100));
+        // Update dealer's probabilities for hand values 17 to 21
         updateDealerProbLabels("dealerProbOf", gameModel.calculateDealerProbabilities(cardCounts, Integer.parseInt(totalCards.getText()), gameModel.getDealerHandValue()));
     }
 
+    /**
+     * @brief Updates the dealer's probability labels for values from 17 to 21.
+     *
+     * @param prefix The prefix for the probability labels (e.g., "dealerProbOf").
+     * @param probabilities The map containing probabilities for each value.
+     * @throws NoSuchFieldException If reflection fails to access fields.
+     * @throws IllegalAccessException If reflection access is denied.
+     */
     private void updateDealerProbLabels(String prefix, Map<Integer, Double> probabilities) throws NoSuchFieldException, IllegalAccessException {
         for (int i = 17; i <= 21; i++) {
-            // Usa reflection per ottenere i label dinamicamente
+            // Use reflection to access the correct label dynamically
             Label probLabel = (Label) getClass().getDeclaredField(prefix + i).get(this);
-            System.out.println(prefix + i + " " + String.valueOf(probabilities.get(i)));
             double probability = probabilities.getOrDefault(i, 0.0);
-            probLabel.setText(String.format("%.2f%%", probability));
+            probLabel.setText(String.format("%.2f%%", probability * 100));
         }
     }
 
-
+    /**
+     * @brief Starts a new turn by resetting the necessary values.
+     *
+     * @throws NoSuchFieldException If reflection fails to access fields.
+     * @throws IllegalAccessException If reflection access is denied.
+     */
     private void setNewTurn() throws NoSuchFieldException, IllegalAccessException {
         deleteGUIValue();
     }
 
+    /**
+     * @brief Resets all values to their initial state.
+     *
+     * @throws NoSuchFieldException If reflection fails to access fields.
+     * @throws IllegalAccessException If reflection access is denied.
+     */
     private void resetAll() throws NoSuchFieldException, IllegalAccessException {
         setCardsNum(1);
+        decksNum.setText("1");
         deleteGUIValue();
     }
 
+    /**
+     * @brief Resets the GUI values, including hands and probabilities.
+     */
     private void deleteGUIValue() throws NoSuchFieldException, IllegalAccessException {
         gameModel.resetPlayerHand();
         gameModel.resetDealerHand();
@@ -208,6 +314,7 @@ public class MainController {
         playerHand.setText("0");
         probToBust.setText("0.00%");
         dealerHand.setText("0");
+        dealerProbOfBust.setText("0.00%");
 
         for (int i = 12; i <= 21; i++) {
             String prefix = "probOf";
@@ -215,6 +322,10 @@ public class MainController {
             probLabel.setText("0,00%");
         }
 
-        dealerProbOfBust.setText("0.00%");
+        for (int i = 17; i <= 21; i++) {
+            String prefix = "dealerProbOf";
+            Label probLabel = (Label) getClass().getDeclaredField(prefix + i).get(this);
+            probLabel.setText("0,00%");
+        }
     }
 }
