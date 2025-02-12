@@ -56,12 +56,17 @@ public class MainController {
         myTurn.setOnAction(event -> handleTurnChange());
         dealerTurn.setOnAction(event -> handleDealerTurnChange());
         start.setOnAction(event -> setCardsNum(getDecksNum()));
+        newTurn.setOnAction(event -> {
+            try {
+                setNewTurn();
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        });
         reset.setOnAction(event -> {
             try {
                 resetAll();
-            } catch (NoSuchFieldException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
+            } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -80,12 +85,19 @@ public class MainController {
     private void handleCardClick(Label label, Button button) throws NoSuchFieldException, IllegalAccessException {
         if (!labelValues.containsKey(label)) return;
 
-        int value = Integer.parseInt(button.getText().trim());
-        decrementLabel(label, value);
+        if(Integer.parseInt(label.getText()) > 0) {
+            int value = Integer.parseInt(button.getText().trim());
+            decrementLabel(label, value);
 
-        gameModel.addCard(value);
-        updatePlayerHand();
-        updateProbabilities();
+            gameModel.addCard(value);
+            updatePlayerHand();
+
+            gameModel.addDealerCard(value);
+            updateDealerHand();
+
+            updateProbabilities();
+            updateDealerProbabilities();
+        }
     }
 
     private void handleTurnChange() {
@@ -93,7 +105,8 @@ public class MainController {
     }
 
     private void handleDealerTurnChange() {
-
+        System.out.println("Dealer turn changed");
+        gameModel.setDealerTurn(dealerTurn.isSelected());
     }
     private void updatePlayerHand() {
         int playerValue = gameModel.getPlayerHandValue();
@@ -102,6 +115,10 @@ public class MainController {
         playerHand.setStyle(playerValue > 21 ? "-fx-text-fill: red;" : "-fx-text-fill: black;");
     }
 
+    private void updateDealerHand() {
+        int dealerValue = gameModel.getDealerHandValue();
+        dealerHand.setText(String.valueOf(dealerValue));
+    }
 
     private void decrementLabel(Label label, int cardValue) {
         if (!labelValues.containsKey(label)) return;
@@ -155,9 +172,38 @@ public class MainController {
         }
     }
 
+    private void updateDealerProbabilities() throws NoSuchFieldException, IllegalAccessException {
+        // Ottieni le probabilità di bustare per il dealer
+        // double probability = gameModel.dealerProbToBust(gameModel.getDealerHandValue(), cardCounts, Integer.parseInt(totalCards.getText()));
+        // dealerProbToBust.setText(String.format("%.2f%%", probability * 100));
+
+        // Aggiorna le probabilità specifiche per il dealer (da 17 a 21)
+        updateDealerProbLabels("dealerProbOf", gameModel.calculateDealerProbabilities(cardCounts, Integer.parseInt(totalCards.getText()), gameModel.getDealerHandValue()));
+    }
+
+    private void updateDealerProbLabels(String prefix, Map<Integer, Double> probabilities) throws NoSuchFieldException, IllegalAccessException {
+        for (int i = 17; i <= 21; i++) {
+            // Usa reflection per ottenere i label dinamicamente
+            Label probLabel = (Label) getClass().getDeclaredField(prefix + i).get(this);
+            System.out.println(prefix + i + " " + String.valueOf(probabilities.get(i)));
+            double probability = probabilities.getOrDefault(i, 0.0);
+            probLabel.setText(String.format("%.2f%%", probability));
+        }
+    }
+
+
+    private void setNewTurn() throws NoSuchFieldException, IllegalAccessException {
+        deleteGUIValue();
+    }
+
     private void resetAll() throws NoSuchFieldException, IllegalAccessException {
         setCardsNum(1);
+        deleteGUIValue();
+    }
+
+    private void deleteGUIValue() throws NoSuchFieldException, IllegalAccessException {
         gameModel.resetPlayerHand();
+        gameModel.resetDealerHand();
         playerHand.setStyle("-fx-text-fill: black;");
         playerHand.setText("0");
         probToBust.setText("0.00%");

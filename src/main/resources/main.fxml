@@ -359,7 +359,7 @@
                      <HBox.margin>
                         <Insets left="40.0" />
                      </HBox.margin></Label>
-                  <Label minWidth="30.0" text="0,00%">
+                  <Label fx:id="dealerProbOfBust" minWidth="30.0" text="0,00%">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
