@@ -32,21 +32,18 @@
 - Uses **recursion** to simulate all possible dealer hands from **17 to 21**.
 - Accounts for **multiple draws**, following the **blackjack rules** (dealer must hit until at least 17).
 - Ensures a **precise probability distribution** by exploring all possible card sequences.
-- Can be optimized using **memoization** to reduce redundant calculations and improve performance.
 
 ### **Additional Considerations** 📊
 - The software continuously updates its calculations **as cards are drawn**, maintaining an accurate probability model.
-- Can be expanded with **Monte Carlo simulations** for even more advanced strategic analysis.
 - Designed to be **lightweight and efficient**, with future improvements aimed at optimizing **computation times and memory usage**.
 
 ### ⚡ **Strengths & Benefits**
-✅ **Fast & Efficient:** Optimized calculations for real-time probability analysis.  
+✅ **Efficient:** Optimized calculations for real-time probability analysis.  
 ✅ **Accurate Dealer Simulation:** Considers all possible dealer outcomes.  
 ✅ **Dynamic Updates:** Always reflects the latest game state.  
 ✅ **Strategic Insights:** Helps users make better, **mathematically sound decisions**.
 
 ### 🔧 **Future Improvements**
-- **Optimized Recursion:** Memoization to speed up dealer calculations.
 - **Advanced Strategy Implementation:** Incorporating Monte Carlo simulations for deeper insights.
 - **Better GUI Feedback:** More intuitive probability visualizations.
 
@@ -57,14 +54,12 @@ This makes 21Strategy a **powerful tool** for understanding blackjack probabilit
 - **JavaFX:** For creating a responsive and modern graphical user interface.
 - **SceneBuilder:** To design and visually preview the user interface.
 - **CSS:** For styling the GUI, making the user experience even more enjoyable.
-- **Additional Libraries:** Various libraries for probability calculation and performance optimization.
 
 ## Contributions 🤝
 Contribute to this project:
 - **Bug Fixing:** Help fix any issues in the software.
 - **Feature Additions:** Implement new features and optimize existing ones.
 - **Algorithm Optimization:** Improve **computation times** and **memory efficiency** for faster and smoother performance.
-- **Optimized Recursion:** Implement **memoization** to enhance dealer probability calculations.
 - **Advanced Strategy Implementation:** Introduce **Monte Carlo simulations** for more in-depth probability analysis.
 - **Better GUI Feedback:** Improve **probability visualization** for a more intuitive user experience.
 
