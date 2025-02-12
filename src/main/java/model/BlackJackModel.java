@@ -68,21 +68,50 @@ public class BlackJackModel {
     }
 
     /**
-     * @brief Calculates the total value of the player's hand.
+     * @brief Calculates the total value of the player's hand, considering the flexible value of aces.
      *
      * @return The total value of the player's hand.
      */
     public int getPlayerHandValue() {
-        return playerHand.stream().mapToInt(Integer::intValue).sum();
+        return calculateHandValue(playerHand);
     }
 
     /**
-     * @brief Calculates the total value of the dealer's hand.
+     * @brief Calculates the total value of the dealer's hand, considering the flexible value of aces.
      *
      * @return The total value of the dealer's hand.
      */
     public int getDealerHandValue() {
-        return dealerHand.stream().mapToInt(Integer::intValue).sum();
+        return calculateHandValue(dealerHand);
+    }
+
+    /**
+     * @brief Calculates the total value of a hand, considering the flexible value of aces.
+     *
+     * @param hand The hand to calculate the value for.
+     * @return The total value of the hand.
+     */
+    private int calculateHandValue(List<Integer> hand) {
+        int sum = 0;
+        int aceCount = 0;
+
+        // Sum all cards, counting aces as 11
+        for (int card : hand) {
+            if (card == 1) {
+                sum += 11;
+                aceCount++;
+            } else {
+                sum += card;
+            }
+        }
+
+        // Adjust for aces if the sum is over 21
+        while (sum > 21 && aceCount > 0) {
+            sum -= 10; // Change an ace from 11 to 1
+            aceCount--;
+        }
+
+        return sum;
     }
 
     /**
@@ -143,7 +172,7 @@ public class BlackJackModel {
     }
 
     /**
-     * @brief Calculates the probability for the player to reach a specific target value.
+     * @brief Calculates the probability for the player to reach a specific target value, considering the flexible value of aces.
      *
      * @param currentSum The current sum of the player's hand.
      * @param target The target value the player is trying to achieve.
@@ -156,7 +185,21 @@ public class BlackJackModel {
         if (currentSum >= target) return 0.0;
 
         int needed = target - currentSum;
-        return cardCounts.getOrDefault(needed, 0) / (double) totalCards;
+        double probability = 0.0;
+
+        // Consider the case where the needed card is an ace (1 or 11)
+        if (needed == 1) {
+            // Ace can be 1 or 11
+            probability += cardCounts.getOrDefault(1, 0) / (double) totalCards;
+        } else if (needed == 11) {
+            // Ace can be 11
+            probability += cardCounts.getOrDefault(1, 0) / (double) totalCards;
+        } else {
+            // Regular card
+            probability += cardCounts.getOrDefault(needed, 0) / (double) totalCards;
+        }
+
+        return probability;
     }
 
     /**
@@ -191,7 +234,7 @@ public class BlackJackModel {
     }
 
     /**
-     * @brief Recursively calculates the probability of the dealer achieving a value between 17 and 21.
+     * @brief Recursively calculates the probability of the dealer achieving a value between 17 and 21, considering the flexible value of aces.
      *
      * @param cardCounts A map containing the counts of each remaining card.
      * @param totalCards The total number of remaining cards.
@@ -200,14 +243,17 @@ public class BlackJackModel {
      * @param probabilities A map to store the final probabilities.
      */
     private void calculateProbabilityForDealer(Map<Integer, Integer> cardCounts, int totalCards, int currentSum, double currentProbability, Map<Integer, Double> probabilities) {
+        // Calculate the current hand value considering aces
+        int currentHandValue = calculateHandValue(dealerHand);
+
         // If the sum is between 17 and 21, add the current probability
-        if (currentSum >= 17 && currentSum <= 21) {
-            probabilities.put(currentSum, probabilities.getOrDefault(currentSum, 0.0) + currentProbability);
+        if (currentHandValue >= 17 && currentHandValue <= 21) {
+            probabilities.put(currentHandValue, probabilities.getOrDefault(currentHandValue, 0.0) + currentProbability);
             return;
         }
 
         // If the sum is greater than 21, no further probabilities can be calculated
-        if (currentSum > 21) {
+        if (currentHandValue > 21) {
             return;
         }
 
@@ -221,19 +267,20 @@ public class BlackJackModel {
             // Calculate the probability of drawing this card
             double cardProbability = (double) count / totalCards;
 
-            // Calculate the new sum with the drawn card
-            int newSum = currentSum + cardValue;
-
             // Temporarily remove the card from the deck
             cardCounts.put(cardValue, count - 1);
             totalCards--;
 
+            // Add the card to the dealer's hand
+            dealerHand.add(cardValue);
+
             // Recursively calculate the probability for the new sum
-            calculateProbabilityForDealer(cardCounts, totalCards, newSum, currentProbability * cardProbability, probabilities);
+            calculateProbabilityForDealer(cardCounts, totalCards, currentSum + cardValue, currentProbability * cardProbability, probabilities);
 
             // Restore the card in the deck (backtracking)
             cardCounts.put(cardValue, count);
             totalCards++;
+            dealerHand.remove(dealerHand.size() - 1); // Remove the last card added
         }
     }
 }

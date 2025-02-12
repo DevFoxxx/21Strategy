@@ -60,8 +60,20 @@ public class MainController {
         }
 
         // Set up checkboxes actions
-        myTurn.setOnAction(event -> handleTurnChange());
-        dealerTurn.setOnAction(event -> handleDealerTurnChange());
+        myTurn.setOnAction(event -> {
+            if (myTurn.isSelected()) {
+                dealerTurn.setSelected(false);
+                handleDealerTurnChange();
+            }
+            handleTurnChange();
+        });
+        dealerTurn.setOnAction(event -> {
+            if (dealerTurn.isSelected()) {
+                myTurn.setSelected(false);
+                handleTurnChange();
+            }
+            handleDealerTurnChange();
+        });
 
         // Set up buttons for start, new turn, and reset
         start.setOnAction(event -> {
@@ -120,17 +132,19 @@ public class MainController {
             int value = Integer.parseInt(button.getText().trim());
             decrementLabel(label, value);
 
-            // Add the card to the player's hand and update the hand
-            gameModel.addCard(value);
-            updatePlayerHand();
+            // Add the card to the player's hand and update the hand probabilities for the player
+            if(Integer.parseInt(playerHand.getText()) < 21 && Integer.parseInt(totalCards.getText())!=0) {
+                gameModel.addCard(value);
+                updatePlayerHand();
+                updateProbabilities();
+            }
 
-            // Add the card to the dealer's hand and update the dealer's hand
-            gameModel.addDealerCard(value);
-            updateDealerHand();
-
-            // Update probabilities for the player and dealer
-            updateProbabilities();
-            updateDealerProbabilities();
+            // Add the card to the dealer's hand and update the dealer's hand and probabilities for the dealer
+            if(Integer.parseInt(dealerHand.getText()) < 17 && Integer.parseInt(totalCards.getText())!=0) {
+                gameModel.addDealerCard(value);
+                updateDealerHand();
+                updateDealerProbabilities();
+            }
         }
     }
 
@@ -155,16 +169,34 @@ public class MainController {
         int playerValue = gameModel.getPlayerHandValue();
         playerHand.setText(String.valueOf(playerValue));
 
+        // Disable myTurn if the player's hand value > 21
+        if (playerValue > 21) {
+            myTurn.setSelected(false);
+            myTurn.setDisable(true);
+            handleDealerTurnChange();
+        } else {
+            myTurn.setDisable(false);
+        }
+
         // Set text color to red if the player busts (hand value > 21)
         playerHand.setStyle(playerValue > 21 ? "-fx-text-fill: red;" : "-fx-text-fill: black;");
     }
 
     /**
-     * @brief Updates the dealer's hand value on the UI.
+     * @brief Updates the dealer's hand value on the UI and disables dealerTurn if the hand value is between 17 and 21.
      */
     private void updateDealerHand() {
         int dealerValue = gameModel.getDealerHandValue();
         dealerHand.setText(String.valueOf(dealerValue));
+
+        // Disable dealerTurn if the dealer's hand value is between 17 and 21
+        if (dealerValue >= 17 && dealerValue <= 21) {
+            dealerTurn.setSelected(false);
+            dealerTurn.setDisable(true);
+            handleDealerTurnChange();
+        } else {
+            dealerTurn.setDisable(false);
+        }
     }
 
     /**
@@ -327,5 +359,8 @@ public class MainController {
             Label probLabel = (Label) getClass().getDeclaredField(prefix + i).get(this);
             probLabel.setText("0,00%");
         }
+
+        dealerTurn.setDisable(false);
+        myTurn.setDisable(false);
     }
 }
