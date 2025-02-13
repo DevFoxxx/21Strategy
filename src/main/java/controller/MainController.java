@@ -150,7 +150,6 @@ public class MainController {
             }
         }
 
-        /*
         bestChoice.setText(gameModel.bestChoice(
                 Integer.parseInt(playerHand.getText()),
                 Integer.parseInt(dealerHand.getText()),
@@ -158,7 +157,6 @@ public class MainController {
                 Double.parseDouble(dealerProbOfBust.getText().replace("%", "").replace(",", ".")) / 100,
                 getPlayerProbabilities(), getDealerProbabilities()
         ));
-         */
     }
 
     /**
@@ -404,13 +402,11 @@ public class MainController {
      */
     private Map<Integer, Double> getPlayerProbabilities() throws NoSuchFieldException, IllegalAccessException {
         Map<Integer, Double> probabilities = new HashMap<>();
-        System.out.println("flag1");
         for (int i = 12; i <= 21; i++) {
             Label probLabel = (Label) getClass().getDeclaredField("probOf" + i).get(this);
             String probText = probLabel.getText().replace("%", "").replace(",", ".");
             probabilities.put(i, Double.parseDouble(probText) / 100);
         }
-        System.out.println("flag2");
         return probabilities;
     }
 

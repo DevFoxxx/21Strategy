@@ -312,6 +312,49 @@ public class BlackJackModel {
      */
     public String bestChoice(int playerHandValue, int dealerHandValue, double probToBust, double probToBustDealer,
                              Map<Integer, Double> playerProbabilities, Map<Integer, Double> dealerProbabilities) {
-        return "";
+        if (playerHandValue == 21) {
+            return "Stand";
+        }
+
+        if (probToBust > 0.51 && probToBustDealer < 0.69) {
+            return "Stand";
+        }
+
+        if (probToBustDealer > 0.70) {
+            boolean shouldHit = shouldPlayerHit(playerProbabilities, dealerProbabilities);
+            if (shouldHit) {
+                return "Hit";
+            }
+        }
+
+        double winProbability = 1 - probToBust;
+        if (winProbability > 0.75 && playerHandValue >= 9 && playerHandValue <= 11) {
+            return "Double";
+        }
+
+        return "Hit";
+    }
+
+    /**
+     * @brief Determines whether the player should hit based on probability comparisons.
+     *
+     * @param playerProbabilities A map containing the player's probability of reaching each hand value.
+     * @param dealerProbabilities A map containing the dealer's probability of holding each hand value.
+     * @return true if the player should hit, false otherwise.
+     */
+
+    private boolean shouldPlayerHit(Map<Integer, Double> playerProbabilities, Map<Integer, Double> dealerProbabilities) {
+        int[] handValues = {17, 18, 19, 20, 21};
+
+        for (int value : handValues) {
+            double playerProb = playerProbabilities.getOrDefault(value, 0.0);
+            double dealerProb = dealerProbabilities.getOrDefault(value, 0.0);
+
+            if (playerProb < dealerProb) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
