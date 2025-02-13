@@ -2,16 +2,6 @@
 * {
 }
 
-/*
-#tableWall {
-    -fx-background-image: url("https://thelibrary.mgmresorts.com/transform/svapBg4wpO81/AdobeStock_124534065-Poker-Table-with-Chips-and-Cards.jpeg");
-    -fx-background-size: cover;
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-padding: 10px 20px;
-}
-*/
-
 #reset {
     -fx-background-color: #FF6347;  /* Colore di sfondo Tomato */
     -fx-text-fill: white;  /* Colore del testo */
@@ -43,4 +33,8 @@
 
 #button1:hover, #button2:hover, #button3:hover, #button4:hover, #button5:hover, #button6:hover, #button7:hover, #button8:hover, #button9:hover, #button10:hover {
     -fx-background-color: #c5c5c5;
+}
+
+#probNum1, #probNum2, #probNum3, #probNum4, #probNum5, #probNum6, #probNum7, #probNum8, #probNum9, #probNum10 {
+    -fx-font-size: 10px;
 }

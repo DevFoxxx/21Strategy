@@ -1,10 +1,7 @@
 # 21Strategy - README
 
-![img_1.png](img_1.png)
-
-![img_2.png](img_2.png)
-
-![img_3.png](img_3.png)
+![img_5.png](img_5.png)
+![img_4.png](img_4.png)
 
 ## Introduction 🃏
 21Strategy is a software designed to calculate probabilities in the game of blackjack. By utilizing advanced probabilistic algorithms, the program suggests the optimal strategy to follow, taking into account the cards already played and the possible future values, both for the player and the dealer. A great tool for anyone looking to improve their technique and understand the dynamics of the game better.

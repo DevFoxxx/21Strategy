@@ -45,6 +45,21 @@ public class BlackJackModel {
         return isDealerTurn;
     }
 
+
+    /**
+     * @brief Calculate the probability of drawing a card and format the result.
+     *
+     * @param cardCount The number of cards remaining of a given value.
+     * @param totalCards The total number of cards remaining in the deck.
+     * @return The probability
+     */
+    public double probDrawCard(int cardCount, int totalCards) {
+        if (totalCards > 0) {
+            return (double) cardCount / totalCards;
+        }
+        return 0;
+    }
+
     /**
      * @brief Adds a card to the player's hand.
      *
@@ -282,5 +297,21 @@ public class BlackJackModel {
             totalCards++;
             dealerHand.remove(dealerHand.size() - 1); // Remove the last card added
         }
+    }
+
+    /**
+     * @brief Determines the best strategy for the player based on probabilities.
+     *
+     * @param playerHandValue The current value of the player's hand.
+     * @param dealerHandValue The current value of the dealer's hand.
+     * @param probToBust The probability that the player will bust.
+     * @param probToBustDealer The probability that the dealer will bust.
+     * @param playerProbabilities The probabilities for the player to achieve values from 12 to 21.
+     * @param dealerProbabilities The probabilities for the dealer to achieve values from 17 to 21.
+     * @return A string indicating the best strategy
+     */
+    public String bestChoice(int playerHandValue, int dealerHandValue, double probToBust, double probToBustDealer,
+                             Map<Integer, Double> playerProbabilities, Map<Integer, Double> dealerProbabilities) {
+        return "";
     }
 }

@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import model.BlackJackModel;
 
+import javax.smartcardio.Card;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +21,9 @@ public class MainController {
     @FXML private Button button1, button2, button3, button4, button5, button6, button7, button8, button9, button10; // card buttons
     @FXML private Button start, reset, newTurn;
     @FXML private Label label1, label2, label3, label4, label5, label6, label7, label8, label9, label10; // total deck cards by value
+    @FXML private Label probNum1, probNum2, probNum3, probNum4, probNum5, probNum6, probNum7, probNum8, probNum9, probNum10; // probability to draw card
     @FXML private Label probOf12, probOf13, probOf14, probOf15, probOf16, probOf17, probOf18, probOf19, probOf20, probOf21; // player probability
-    @FXML private Label totalCards, playerHand, probToBust, dealerHand, dealerProbOfBust;
+    @FXML private Label totalCards, playerHand, probToBust, dealerHand, dealerProbOfBust, bestChoice;
     @FXML private Label dealerProbOf17, dealerProbOf18, dealerProbOf19, dealerProbOf20, dealerProbOf21; // dealer probability
 
     private List<Label> labels;
@@ -45,8 +47,9 @@ public class MainController {
         buttonLabelMap.put(button9, label9);
         buttonLabelMap.put(button10, label10);
 
-        // Initialize card count to 1 deck
+        // Initialize card count to 1 deck and prob to draw cards
         setCardsNum(1);
+        setProbToDrawCards();
 
         // Set up button actions
         for (Map.Entry<Button, Label> entry : buttonLabelMap.entrySet()) {
@@ -146,6 +149,16 @@ public class MainController {
                 updateDealerProbabilities();
             }
         }
+
+        /*
+        bestChoice.setText(gameModel.bestChoice(
+                Integer.parseInt(playerHand.getText()),
+                Integer.parseInt(dealerHand.getText()),
+                Double.parseDouble(probToBust.getText().replace("%", "").replace(",", ".")) / 100,
+                Double.parseDouble(dealerProbOfBust.getText().replace("%", "").replace(",", ".")) / 100,
+                getPlayerProbabilities(), getDealerProbabilities()
+        ));
+         */
     }
 
     /**
@@ -205,7 +218,7 @@ public class MainController {
      * @param label The label corresponding to the card.
      * @param cardValue The value of the card.
      */
-    private void decrementLabel(Label label, int cardValue) {
+    private void decrementLabel(Label label, int cardValue) throws NoSuchFieldException, IllegalAccessException {
         if (!labelValues.containsKey(label)) return;
 
         int currentValue = labelValues.get(label);
@@ -219,6 +232,20 @@ public class MainController {
 
             // Update the card count for the card value
             cardCounts.put(cardValue, cardCounts.getOrDefault(cardValue, 0) - 1);
+
+            setProbToDrawCards();
+        }
+    }
+
+    /**
+     * @brief Probability to draw all different type of card
+     */
+    private void setProbToDrawCards() throws NoSuchFieldException, IllegalAccessException {
+        for(int i=1; i<=10; i++) {
+            Label tmpLab = (Label) getClass().getDeclaredField("label" + i).get(this);
+            double probability = gameModel.probDrawCard(Integer.parseInt(tmpLab.getText()), Integer.parseInt(totalCards.getText()));
+            Label drawNum = (Label) getClass().getDeclaredField("probNum" + i).get(this);
+            drawNum.setText(String.format("%.2f%%", probability * 100));
         }
     }
 
@@ -346,6 +373,7 @@ public class MainController {
         playerHand.setText("0");
         probToBust.setText("0.00%");
         dealerHand.setText("0");
+        bestChoice.setText("/");
         dealerProbOfBust.setText("0.00%");
 
         for (int i = 12; i <= 21; i++) {
@@ -362,5 +390,46 @@ public class MainController {
 
         dealerTurn.setDisable(false);
         myTurn.setDisable(false);
+        setProbToDrawCards();
+    }
+
+    /**
+     * @brief Retrieves the player's probabilities to achieve hand values from 12 to 21.
+     *
+     * @throws NoSuchFieldException If the field corresponding to the label is not found.
+     * @throws IllegalAccessException If the field is not accessible.
+     *
+     * @return A map where the keys are hand values from 12 to 21, and the values are the probabilities
+     *         (between 0 and 1) of the player achieving those values.
+     */
+    private Map<Integer, Double> getPlayerProbabilities() throws NoSuchFieldException, IllegalAccessException {
+        Map<Integer, Double> probabilities = new HashMap<>();
+        System.out.println("flag1");
+        for (int i = 12; i <= 21; i++) {
+            Label probLabel = (Label) getClass().getDeclaredField("probOf" + i).get(this);
+            String probText = probLabel.getText().replace("%", "").replace(",", ".");
+            probabilities.put(i, Double.parseDouble(probText) / 100);
+        }
+        System.out.println("flag2");
+        return probabilities;
+    }
+
+    /**
+     * @brief Retrieves the dealer's probabilities to achieve hand values from 17 to 21.
+     *
+     * @throws NoSuchFieldException If the field corresponding to the label is not found.
+     * @throws IllegalAccessException If the field is not accessible.
+     *
+     * @return A map where the keys are hand values from 17 to 21, and the values are the probabilities
+     *         (between 0 and 1) of the dealer achieving those values.
+     */
+    private Map<Integer, Double> getDealerProbabilities() throws NoSuchFieldException, IllegalAccessException {
+        Map<Integer, Double> probabilities = new HashMap<>();
+        for (int i = 17; i <= 21; i++) {
+            Label probLabel = (Label) getClass().getDeclaredField("dealerProbOf" + i).get(this);
+            String probText = probLabel.getText().replace("%", "").replace(",", ".");
+            probabilities.put(i, Double.parseDouble(probText) / 100);
+        }
+        return probabilities;
     }
 }
