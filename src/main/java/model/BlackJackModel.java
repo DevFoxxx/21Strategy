@@ -329,7 +329,7 @@ public class BlackJackModel {
 
         double winProbability = 1 - probToBust;
         if (winProbability > 0.75 && playerHandValue >= 9 && playerHandValue <= 11) {
-            return "Double";
+            return "Double Down";
         }
 
         return "Hit";
