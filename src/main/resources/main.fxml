@@ -299,7 +299,7 @@
                         </HBox>
                         <HBox prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <SplitPane dividerPositions="0.19594594594594594" maxHeight="100.0" maxWidth="150.0" prefWidth="150.0">
+                              <SplitPane id="prob12to16" dividerPositions="0.1959" maxHeight="100.0" maxWidth="150.0" prefWidth="150.0">
                                 <items>
                                   <AnchorPane minHeight="0.0" minWidth="0.0">
                                        <children>

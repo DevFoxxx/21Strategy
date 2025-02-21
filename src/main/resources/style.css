@@ -1,38 +1,47 @@
-/* Selettore per ID reset */
-* {
+#reset {
+    -fx-background-color: #FF6347;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10px 10px;
 }
 
-#reset {
-    -fx-background-color: #FF6347;  /* Colore di sfondo Tomato */
-    -fx-text-fill: white;  /* Colore del testo */
-    -fx-font-size: 16px;  /* Dimensione del font */
-    -fx-padding: 10px 10px;  /* Padding */
+#reset:hover {
+    -fx-background-color: #85210a;
 }
 
 #start {
-    -fx-background-color: green;  /* Colore di sfondo Tomato */
-    -fx-text-fill: white;  /* Colore del testo */
-    -fx-font-size: 16px;  /* Dimensione del font */
-    -fx-padding: 10px 10px;  /* Padding */
+    -fx-background-color: green;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10px 10px;
+}
+
+#start:hover {
+    -fx-background-color: #096309;
 }
 
 #newTurn {
-    -fx-background-color: #2e91d2;  /* Colore di sfondo Tomato */
-    -fx-text-fill: white;  /* Colore del testo */
-    -fx-font-size: 16px;  /* Dimensione del font */
-    -fx-padding: 10px 10px;  /* Padding */
+    -fx-background-color: #2e91d2;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10px 10px;
+}
+
+#newTurn:hover {
+    -fx-background-color: #0a3c5c;
 }
 
 #button1, #button2, #button3, #button4, #button5, #button6, #button7, #button8, #button9, #button10 {
-    -fx-background-color: white;  /* Colore di sfondo Tomato */
+    -fx-background-color: white;
     -fx-border-color: black;
     -fx-min-height: 50px;
     -fx-min-width: 60px;
-    -fx-padding: 10px 10px;  /* Padding */
+    -fx-padding: 10px 10px;
 }
 
 #button1:hover, #button2:hover, #button3:hover, #button4:hover, #button5:hover, #button6:hover, #button7:hover, #button8:hover, #button9:hover, #button10:hover {
-    -fx-background-color: #c5c5c5;
+    -fx-background-color: #000000;
+    -fx-text-fill: white;
 }
 
 #probNum1, #probNum2, #probNum3, #probNum4, #probNum5, #probNum6, #probNum7, #probNum8, #probNum9, #probNum10 {

@@ -205,14 +205,15 @@ public class MainController {
         int dealerValue = gameModel.getDealerHandValue();
         dealerHand.setText(String.valueOf(dealerValue));
 
-        // Disable dealerTurn if the dealer's hand value is between 17 and 21
-        if (dealerValue >= 17 && dealerValue <= 21) {
+        // Disable dealerTurn if the dealer's hand value is >= 17
+        if (dealerValue >= 17) {
             dealerTurn.setSelected(false);
             dealerTurn.setDisable(true);
             handleDealerTurnChange();
         } else {
             dealerTurn.setDisable(false);
         }
+
     }
 
     /**
