@@ -391,6 +391,20 @@
                               </SplitPane>
                            </children>
                         </HBox>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <Label text="Hand:">
+                                 <HBox.margin>
+                                    <Insets left="100.0" top="15.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label fx:id="handCards" text="/">
+                                 <HBox.margin>
+                                    <Insets left="10.0" top="15.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                        </HBox>
                      </children>
                      <HBox.margin>
                         <Insets />

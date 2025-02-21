@@ -23,7 +23,7 @@ public class MainController {
     @FXML private Label label1, label2, label3, label4, label5, label6, label7, label8, label9, label10; // total deck cards by value
     @FXML private Label probNum1, probNum2, probNum3, probNum4, probNum5, probNum6, probNum7, probNum8, probNum9, probNum10; // probability to draw card
     @FXML private Label probOf12, probOf13, probOf14, probOf15, probOf16, probOf17, probOf18, probOf19, probOf20, probOf21; // player probability
-    @FXML private Label totalCards, playerHand, probToBust, dealerHand, dealerProbOfBust, bestChoice;
+    @FXML private Label totalCards, playerHand, probToBust, dealerHand, dealerProbOfBust, bestChoice, handCards;
     @FXML private Label dealerProbOf17, dealerProbOf18, dealerProbOf19, dealerProbOf20, dealerProbOf21; // dealer probability
 
     private List<Label> labels;
@@ -138,7 +138,7 @@ public class MainController {
             // Add the card to the player's hand and update the hand probabilities for the player
             if(Integer.parseInt(playerHand.getText()) < 21 && Integer.parseInt(totalCards.getText())!=0) {
                 gameModel.addCard(value);
-                updatePlayerHand();
+                updatePlayerHand(button.getText());
                 updateProbabilities();
             }
 
@@ -176,15 +176,20 @@ public class MainController {
     /**
      * @brief Updates the player's hand value on the UI.
      */
-    private void updatePlayerHand() {
+    private void updatePlayerHand(String cardValue) {
         int playerValue = gameModel.getPlayerHandValue();
         playerHand.setText(String.valueOf(playerValue));
 
+        if(gameModel.isMyTurn()) {
+            String currentText = handCards.getText();
+            handCards.setText(currentText + " " + cardValue);
+        }
+
         // Disable myTurn if the player's hand value > 21
-        if (playerValue > 21) {
+        if (playerValue >= 21) {
             myTurn.setSelected(false);
             myTurn.setDisable(true);
-            handleDealerTurnChange();
+            handleTurnChange();
         } else {
             myTurn.setDisable(false);
         }
@@ -371,8 +376,9 @@ public class MainController {
         playerHand.setText("0");
         probToBust.setText("0.00%");
         dealerHand.setText("0");
-        bestChoice.setText("/");
+        bestChoice.setText("Hit");
         dealerProbOfBust.setText("0.00%");
+        handCards.setText("");
 
         for (int i = 12; i <= 21; i++) {
             String prefix = "probOf";
